@@ -6,8 +6,8 @@ import numpy as np
 
 # CARGA DE LOS CANALES
 FastText, Word2Vec, GloVe = WE.loadChannels()
-data = WE.loadData_2_in("./Task_1/intertass-train-tagged.xml", "./Task_1/intertass-development-tagged.xml") # oraciones para el entrenmiento
-data_test = WE.loadDataTesting("./Task_1/intertass-test.xml", "./Task_1/intertass-sentiment.qrel") # oraciones para el testing
+#data = WE.loadData_2_in("./Task_1/intertass-train-tagged.xml", "./Task_1/intertass-development-tagged.xml") # oraciones para el entrenmiento
+#data_test = WE.loadDataTesting("./Task_1/intertass-test.xml", "./Task_1/intertass-sentiment.qrel") # oraciones para el testing
 
 #data = WE.loadData_1_in("./Task_1/general-train-tagged-3l.xml") # oraciones para el entrenmiento
 #data_test = WE.loadDataTesting("./Task_1/general-test-tagged-3l.xml", "./Task_1/general-sentiment-3l.qrel") # oraciones para el testing
@@ -88,7 +88,7 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 #n_fragments = 11 #cross_validation
 batch_size = 55
-n_epoch = 2400
+n_epoch = 5000
 
 with tf.Session() as sess:
     saver = tf.train.Saver()

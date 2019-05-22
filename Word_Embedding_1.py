@@ -18,6 +18,15 @@ def get_stop_words():
 def tokenizer(text, stop):
     #text = str(text2)
     text = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b', ' ', text)
+    text = re.sub(r"(^|\s)[\b|>?[:|8|=]'?-?[\]|\)|3|>|\}](\s|$)", ' smile ', text)
+    text = re.sub(r"(^|\s)>?[:|8|x|X|=|;]'?-?[D|3|<|>|](\s|$)", ' laugh ', text)
+    text = re.sub(r"(^|\s)>?[:|8|=]-?[(|<|\[|\{|](\s|$)", ' sad ', text)
+    text = re.sub(r"(^|\s)>?[:|8|=]'-?[(|<|\[|\{|](\s|$)", ' cry ', text)
+    text = re.sub(r"(^|\s)D-?'?[:|8|=|;|X|x]<?(\s|$)", ' horrorified ', text)
+    text = re.sub(r"(^|\s)>?[:|8|=]-?[0|o|O](\s|$)", ' surprise ', text)
+    text = re.sub(r"(^|\s)>?[;]-?[\])|3|>|\}](\s|$)", ' wink ', text)
+    text = re.sub(r"(^|\s)>?[:|8|=|x|X]-?[P|/|p|þ](\s|$)", ' playful ', text)
+    text = re.sub(r"(^|\s)>?[:|8|=|x|X]-?[/|\\|L|S](\s|$)", ' skeptical ', text)
     text = re.sub(r'<[^>]*>', ' ', text)
     text = re.sub(r'[^|][0-9]+', ' ', text)
     text = re.sub(r'[\s!/,\\.?¡¿"“”:/();]+', ' ', text) #”

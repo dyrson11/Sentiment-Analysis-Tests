@@ -70,15 +70,17 @@ merged = tf.concat(outputs, 2)
 output = tf.transpose(merged, [1, 0, 2])
 last = tf.gather(output, int(output.get_shape()[0]) - 1)
 
-v_att = tf.tanh(tf.matmul(tf.reshape(last, [-1, hidden_units*2]), self.w_att) \
-                    + tf.reshape(self.b_att, [1, -1]))
-        betas = tf.matmul(v_att, tf.reshape(self.u_att, [-1, 1]))
+attentionSize = 128
+w_att = weight_values([hidden_units * 2, attentionSize])
+b_att = bias_values([attentionSize])
+u_att = tf.Variable(tf.random_normal([attentionSize], stddev=0.1))
 
-        exp_betas = tf.reshape(tf.exp(betas), [-1, self.maxSeqLength])
-        alphas = exp_betas / tf.reshape(tf.reduce_sum(exp_betas, 1), [-1, 1])
 
-        output = tf.reduce_sum(hidden_layer * tf.reshape(alphas,
-                                                         [-1, self.maxSeqLength, 1]), 1)
+v_att = tf.tanh(tf.matmul(tf.reshape(last, [-1, hidden_units*2]), w_att) + tf.reshape(b_att, [1, -1]))
+betas = tf.matmul(v_att, tf.reshape(u_att, [-1, 1]))
+exp_betas = tf.reshape(tf.exp(betas), [-1, max_mat])
+alphas = exp_betas / tf.reshape(tf.reduce_sum(exp_betas, 1), [-1, 1])
+output = tf.reduce_sum(last * tf.reshape(alphas, [-1, max_mat, 1]), 1)
 
 
 
@@ -96,20 +98,20 @@ accuracy = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
 
 #n_fragments = 11 #cross_validation
 batch_size = 55
-n_epoch = 2300
+n_epoch = 2500
 
 with tf.Session() as sess:
     saver = tf.train.Saver()
     sess.run(tf.global_variables_initializer())
     for i in range(n_epoch):
         x_train, y_train = WE.get_minibatch(batch_size, i, x_3d, y_d)
-        sess.run(train_function, feed_dict={x_input: x_train[:,:,:,0], y_output: y_train, dropout_keep_prob: 0.5})
+        sess.run(train_function, feed_dict={x_input: x_train[:,:,:,2], y_output: y_train, dropout_keep_prob: 0.5})
         if i % 100 == 0:
-            train_accuracy = accuracy.eval(feed_dict={x_input: x_train[:,:,:,0], y_output: y_train, dropout_keep_prob: 0.5})
+            train_accuracy = accuracy.eval(feed_dict={x_input: x_train[:,:,:,2], y_output: y_train, dropout_keep_prob: 0.5})
             print('step %d, eficiencia del training %g' % (i, train_accuracy))
 
     # testing
-    ef_test = accuracy.eval(feed_dict={x_input: x_test[:,:,:,0], y_output: y_test, dropout_keep_prob: 1})
+    ef_test = accuracy.eval(feed_dict={x_input: x_test[:,:,:,2], y_output: y_test, dropout_keep_prob: 1})
     print('eficiencia del test %g' % ef_test)
 
     name = "modelos_task_1/" + str(ef_test) + "/pretrained.ckpt"
